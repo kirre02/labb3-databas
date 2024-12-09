@@ -43,6 +43,46 @@ public class TasksDAO {
         }
     }
 
+    public void deleteTask(int taskId) {
+        String deleteSQL = "DELETE FROM tasks WHERE id = ?";
+
+        try (Connection conn = DatabaseManager.connect();
+             PreparedStatement pstmt = conn.prepareStatement(deleteSQL)) {
+            pstmt.setInt(1, taskId);
+            int rowsDeleted = pstmt.executeUpdate();
+
+            if (rowsDeleted > 0) {
+                System.out.println("Uppgift raderad.");
+            } else {
+                System.out.println("Uppgift hittades inte.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Fel vid radering av uppgift: " + e.getMessage());
+        }
+    }
+
+    public void updateTask(int taskId, String description, String status) {
+        String updateSQL = "UPDATE tasks SET description = ?, status = ? WHERE id = ?";
+
+        try (Connection conn = DatabaseManager.connect();
+             PreparedStatement pstmt = conn.prepareStatement(updateSQL)) {
+            pstmt.setString(1, description);
+            pstmt.setString(2, status);
+            pstmt.setInt(3, taskId);
+            int rowsUpdated = pstmt.executeUpdate();
+
+            if (rowsUpdated > 0) {
+                System.out.println("Uppgift uppdaterad.");
+            } else {
+                System.out.println("Uppgift hittades inte.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Fel vid uppdatering av uppgift: " + e.getMessage());
+        }
+    }
+
+
+
     public void markTaskAsCompleted(int taskId) {
         String updateSQL = "UPDATE tasks SET status = 'completed' WHERE id = ?";
 
